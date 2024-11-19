@@ -10,13 +10,14 @@
 
 
 #include "definiciones.h"
+#include "cargo.h"
+#include "persona.h"
 
 typedef struct nodo_empresa * Empresa;
 
-typedef struct nodo_cargo * Cargo;
-
-typedef struct tipo_persona * Persona;
-
+struct nodo_empresa {
+    Cargo cargo_maximo;
+};
 
 TipoRet CrearOrg(Empresa &e, Cadena cargo);
 // Inicializa la empresa y crea el primer cargo de la empresa.
@@ -69,22 +70,6 @@ TipoRet ListarPersonas(Empresa e, Cadena cargo);
 TipoRet ListarSuperCargos (Empresa e, Cadena cargo);
 // Dado un cargo listar los cargos que lo anteceden.
 // Lista todas los cargos que anteceden, en la jerarquía, al cargo de nombre cargo. 
-
-bool PersonaAsignada(Cargo cargo, Cadena ci);
-// chequea que la CI de la persona se encuentre (o no) en el cargo que le pasamos
-
-Cargo GetCargo(Cargo cargo, Cadena nombre);
-// se le pasa un cargo y el nombre del cargo y se fija recursivamente en sus subcargos y cargos hermanos si existe
-
-bool EliminarPersonaAux(Cargo cargo, Cadena ci);
-// funcion auxiliar para eliminar una persona de un cargo, se ejecuta recursivamente y va por todos los cargos de 
-// subcargos y hermanos para eliminar a la persona
-
-bool LimpiarPersonaDelCargo(Cargo cargo, Cadena ci);
-// funcion que se ejecuta en la funcion EiminarPersonaAux para sacar liberar al cargo de las personas
-
-void ListarJerarquiaAux(Cargo cargo, int profundidad);
-// funcion auxiliar que recorre los cargos de una empresa recursivamente, los identa y los muestra en consola
 
 #endif
 
