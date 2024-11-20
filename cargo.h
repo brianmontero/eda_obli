@@ -40,4 +40,7 @@ void ListarJerarquiaDeCargos(Cargo cargo, int profundidad);
 Cargo BuscarCargoPorCI(Cargo cargo, Cadena ci);
 // busca un cargo por el ci de una persona (si hay una persona con la cedula "ci" ocupando el cargo)
 
+int ContarCargos(Cargo cargo);
+// recursivamente va por todos los campos de la empresa y finalmente retorna la el total de cargos
+
 #endif

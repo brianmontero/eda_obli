@@ -11,6 +11,12 @@
         "cargo.h": "c",
         "string.h": "c",
         "definiciones.h": "c",
-        "functional": "c"
+        "functional": "c",
+        "random": "c",
+        "array": "c",
+        "initializer_list": "c",
+        "utility": "c",
+        "vector": "c",
+        "algorithm": "c"
     }
 }

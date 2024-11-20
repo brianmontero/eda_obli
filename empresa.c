@@ -7,6 +7,7 @@
 
 #include "empresa.h"
 #include "cargo.h"
+#include "listaCargo.h"
 #include "persona.h"
 #include <string.h>
 #include <iostream>
@@ -68,7 +69,8 @@ TipoRet NuevoCargo(Empresa &e, Cadena cargoPadre, Cadena nuevoCargo){
     // buscamos el cargo padre
     Cargo padre = GetCargo(e->cargo_maximo, cargoPadre);
     if (padre != NULL) {
-        if (GetCargo(e->cargo_maximo, nuevoCargo) != NULL) {
+        Cargo cargoEncontrado = GetCargo(e->cargo_maximo, nuevoCargo); 
+        if (cargoEncontrado != NULL) {
             // si el cargo ya existe entonces retornamos error
             return ERROR;
         } else {
@@ -124,16 +126,21 @@ TipoRet EliminarCargo(Empresa &e, Cadena cargo){
                 // si encontramos el padre del cargo, entonces apuntamos el primer subcargo al hermano del cargo que vamos a eliminer
                 if (padre->primer_subcargo == cargoEncontrado) {
                     padre->primer_subcargo = cargoEncontrado->cargo_hermano;
+                    cout << "padre->primer_subcargo == cargoEncontrado";
                 } else {
                     // si no logramos encontrar al cargo a eliminar por una relacion de padre/hijo, entonces vamos a buscar por sus hermanos
                     // y si encontramos al cargo a eliminar entre los hermanos, entonces apuntamos al cargo al primer hermano del cargo que vamos a eliminar y asi lo sacamos del nivel de hermanos
+                    cout << "entre en el else";
                     Cargo hermano = padre->primer_subcargo;
-                    while (hermano->cargo_hermano != cargoEncontrado) {
+                    while (hermano != NULL && hermano->cargo_hermano != cargoEncontrado) {
                         hermano = hermano->cargo_hermano;
                     }
-                    hermano->cargo_hermano = cargoEncontrado->cargo_hermano;
+                    if (hermano != NULL) {
+                        hermano->cargo_hermano = cargoEncontrado->cargo_hermano;
+                    }
                 }
                 // al final limpiamos el cargo liberando la memoria que ocupaba y a la persona (si habia) que ocupaba el cargo
+                cout << "LimpiarCargo()";
                 LimpiarCargo(cargoEncontrado);
 
                 return OK;
@@ -144,9 +151,25 @@ TipoRet EliminarCargo(Empresa &e, Cadena cargo){
 }
 
 TipoRet ListarCargosAlf(Empresa e){
-// Listar todos los cargos ordenados alfabéticamente.
-// Lista todos los cargos de la empresa ordenados alfabéticamente por nombre del cargo. 
-	return NO_IMPLEMENTADA;
+    if (e == NULL || e->cargo_maximo == NULL) {
+        return ERROR;
+    } else {
+        // Crear una lista para almacenar los cargos
+        int cantCargos = ContarCargos(e->cargo_maximo);
+        ListaCargos lista = CrearListaCargos(cantCargos);
+        if (lista == NULL) {
+            return ERROR;
+        }
+
+        // recolectamos todos los cargos y luego utilizamos la funcion qsort para ordenar alfabeticamente los elementos de array, con la funcion ComprarCargos hacemos la comparacion
+        RecolectarCargos(e->cargo_maximo, lista);
+        qsort(lista->cargos, lista->cantCargos, sizeof(Cargo), CompararCargos);
+        // finalmente listamos los cargos y liberamos la memoria del array
+        ListarCargosOrdenados(lista);
+        LimpiarListaCargos(lista);
+
+        return OK;
+    }
 }
 
 TipoRet ListarJerarquia(Empresa e){

@@ -56,10 +56,13 @@ void LimpiarCargo(Cargo cargo) {
     } else {
         // se limpian a los subcargos o a los cargos hermanos
         LimpiarCargo(cargo->primer_subcargo);
+        cargo->primer_subcargo = NULL;
         LimpiarCargo(cargo->cargo_hermano);
+        cargo->cargo_hermano = NULL;
 
         // inicialmente si hay un cargo se limpian a las personas en ese cargo
         LimpiarPersona(cargo->personas);
+        cargo->personas = NULL;
 
         // al final se libera de memoria el valor del nodo cargo (el nombre) y por ultimo el nodo mismo
         free(cargo->nombre);
@@ -155,7 +158,7 @@ void ListarCargosPadres(Cargo cargoMaximo, Cargo cargo) {
 }
 
 void ListarJerarquiaDeCargos(Cargo cargo, int profundidad) {
-    if (cargo != NULL)  {
+    if (cargo != NULL && cargo->nombre != NULL)  {
         // identa segun la profundidad, mientras mas profundo sea el cargo mas identacion hay
         for (int i = 0; i < profundidad; i++) {
             cout << "      ";
@@ -165,4 +168,20 @@ void ListarJerarquiaDeCargos(Cargo cargo, int profundidad) {
         ListarJerarquiaDeCargos(cargo->primer_subcargo, profundidad + 1);
         ListarJerarquiaDeCargos(cargo->cargo_hermano, profundidad);
     }
+}
+
+int ContarCargos(Cargo cargo) {
+    if (cargo == NULL) {
+        // caso base, no hay mas cargos
+        return 0;
+    } else {
+        int cant = 1;
+
+        // va recursivamente por los hijos y hermanos
+        cant += ContarCargos(cargo->primer_subcargo);
+        cant += ContarCargos(cargo->cargo_hermano);
+
+        return cant;
+    }
+
 }
